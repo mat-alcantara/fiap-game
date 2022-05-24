@@ -52,11 +52,23 @@
 		
 		//definir o ínicio do desenho
 		var x = canvas.width / 2;
-		var y = 350;
+		var y = canvas.height / 2;
 
-		// Definir o início do inimigo
-		var x_inimigo = Math.floor((Math.random() * canvas.width));
-		var y_inimigo = 0;
+		// Inimigo superior
+		var x_cima = Math.floor((Math.random() * canvas.width));
+		var y_cima = 0;
+
+		// Inimigo da direita
+		var x_direita = 750;
+		var y_direita = Math.floor((Math.random() * canvas.height));
+
+		// Inimigo inferior
+		var x_baixo = Math.floor((Math.random() * canvas.width));
+		var y_baixo = 350;
+
+		// Inimigo da esquerda
+		var x_esquerda = 0;
+		var y_esquerda = Math.floor((Math.random() * canvas.height));
 
 		// Obtendo o valor do momento em que o jogo é iniciado
 		var tInicial = new Date().getTime();
@@ -70,22 +82,22 @@
 
     function pressionaTecla(tecla){
 				if(tecla.keyCode == 39  ) {
-					if (x <= 750) x = x + 5; //aumentar o x tem o efeito de ir para a direita
+					if (x <= 750) x = x + 10; //aumentar o x tem o efeito de ir para a direita
 					nave = document.getElementById('nave270');
 				}
 
 				if(tecla.keyCode == 37  ) {
-					if (x >= 0) x = x - 5; //diminuir o x tem o efeito de ir para a esquerda
+					if (x >= 0) x = x - 10; //diminuir o x tem o efeito de ir para a esquerda
 					nave = document.getElementById('nave90')
 				}	
 			
 				if(tecla.keyCode == 38  ) {
-					if (y >= 0) y = y - 5; //diminuir y tem o efeito de subida
+					if (y >= 0) y = y - 10; //diminuir y tem o efeito de subida
 					nave = document.getElementById('nave');
 				}
 
 				if(tecla.keyCode == 40  ) {
-					if (y <= 350) y = y + 5; //aumentar y tem o efeito de descer
+					if (y <= 350) y = y + 10; //aumentar y tem o efeito de descer
 					nave = document.getElementById('nave180');
 				}
     }
@@ -110,13 +122,20 @@
 			desenharQuadrado(pX,pY);
 			pontos(x);
 
-			// Faz com que a posição no eixo Y do inimigo caia constantemente para criar o efeito de queda
-			y_inimigo += 2;
+			y_cima += 2;
+			y_baixo -= 2;
+
+			x_esquerda += 4;
+			x_direita -= 4;
 		}
 
 		function desenharQuadrado(pX,pY) {
 			//desenha o asteroide
-			ctx.drawImage(asteroide, x_inimigo, y_inimigo, 50, 50);
+			ctx.drawImage(asteroide, x_cima, y_cima, 50, 50);
+			ctx.drawImage(asteroide, x_direita, y_direita, 50, 50);
+			ctx.drawImage(asteroide, x_baixo, y_baixo, 50, 50);
+			ctx.drawImage(asteroide, x_esquerda, y_esquerda, 50, 50);
+
       //desenha a nave
 			ctx.drawImage(nave, pX, pY, 50, 50);
 		}
@@ -136,7 +155,11 @@
 
 		// Detecta se há colisão e dá game over caso sim
 		function detectarColisao() {
-         if( ( (x_inimigo + 50) >  x && x_inimigo < (x + 50) ) && ( (y_inimigo + 50) > y && y_inimigo < (y + 50))) {
+         if( ( (x_cima + 50) >  x && x_cima < (x + 50) ) && ( (y_cima + 50) > y && y_cima < (y + 50)) ||
+				 ( (x_direita + 50) >  x && x_direita < (x + 50) ) && ( (y_direita + 50) > y && y_direita < (y + 50)) ||
+				 ( (x_baixo + 50) >  x && x_baixo < (x + 50) ) && ( (y_baixo + 50) > y && y_baixo < (y + 50)) ||
+				 ( (x_esquerda + 50) >  x && x_esquerda < (x + 50) ) && ( (y_esquerda + 50) > y && y_esquerda < (y + 50))
+				 ) {
 						gameOver()
          }
 				else {
@@ -149,8 +172,17 @@
 		 function criaInimigo() {
     		setTimeout(function() {
 					requestAnimationFrame(criaInimigo);
-					x_inimigo = Math.floor((Math.random() * canvas.width));
-					y_inimigo = 0;
+					x_cima = Math.floor((Math.random() * canvas.width));
+					y_cima = 0;
+
+					x_baixo = Math.floor((Math.random() * canvas.width));;
+					y_baixo = 350;
+
+					x_direita = 750;
+					y_direita = Math.floor((Math.random() * canvas.height));
+
+					x_esquerda = 0;
+					y_esquerda = Math.floor((Math.random() * canvas.height));
     		}, 1000 / fps);
 		}
 
