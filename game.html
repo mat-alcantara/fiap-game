@@ -1,3 +1,14 @@
+<!-- INFORMAÇÕES DO GRUPO -->
+<!-- Daniel de Sousa Maia RM96111 
+
+Julia Pinheiro de Farias RM96127 
+
+Mateus Alcantara de Castro RM96137 
+
+Roberto Claudio Castro Dos Santos RM96162 
+
+Samanta Melissa do Nascimento RM96224 -->
+
 <!DOCTYPE html>
 <html>
 	<head>
@@ -6,6 +17,14 @@
 	</head>
 <body>
 	<canvas id="minha-tela" width="800" height="400" style="border: #F00 solid 1px;"> </canvas>
+
+	<!-- Button -->
+	<div class='btn'>
+		<button id="botao" onclick="window.location.reload()" style="cursor: pointer; height: 48px; display:none; background-color: green; color:aliceblue; width: 800px;
+		margin: 2px;">
+			Reiniciar o jogo
+		</button>
+	</div>
 	
 	<!-- Nave normal -->
 	<div style="display:none;">
@@ -150,6 +169,7 @@
 		function gameOver() {
 				ctx.font = "64px Helvetica";
 				ctx.fillStyle = "red";
+				document.getElementById("botao").style.display = "block";
 				ctx.fillText("GAME OVER",canvas.width/2-150,canvas.height/2);
 		}
 
