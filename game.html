@@ -95,6 +95,9 @@ Roberto Claudio Castro Dos Santos RM96162
 		// Tempo para geração de novos inimigos
 		var fps = 1/3;
 
+		// Indica se há uma pergunta aguardando resposta
+		var question = false;
+
 		// Movimentação da nave ao pressionar teclas
 		window.onkeydown = pressionaTecla;
 
@@ -128,7 +131,8 @@ Roberto Claudio Castro Dos Santos RM96162
 			tAtual = new Date().getTime();
       intervalo = Math.floor((tAtual - tInicial)/1000); // Compara o tempo atual com o inicial para definir a pontuação
 		
-			renderizarJogo(x,y, intervalo);
+			console.log(question);
+			question ? newQuestion(x, y) : renderizarJogo(x,y, intervalo);
 
 			// Chama a função que verifica a colisão, e caso exista, finaliza o jogo
 			detectarColisao();
@@ -146,6 +150,22 @@ Roberto Claudio Castro Dos Santos RM96162
 
 			x_esquerda += 4;
 			x_direita -= 4;
+		}
+
+		// Ativa pergunta
+		function newQuestion(pX, pY, x) {
+				ctx.clearRect(0, 0, 800, 400); // limpa o canvas antes da pergunta
+
+				ctx.font = "16px Helvetica";
+				ctx.fillStyle = "black";
+				ctx.fillText("Lorem Ipsum is simply Lorem Ipsum is simply", 100 ,50);
+				ctx.fillText("A) Lorem Ipsum is simply", 100 ,100);
+				ctx.fillText("B) Lorem Ipsum is simply", 100 ,150);
+				ctx.fillText("C) Lorem Ipsum is simply", 100 ,200);
+				ctx.fillText("D) Lorem Ipsum is simply", 100 ,250);
+
+				// posiciona a nave no canto direito
+				ctx.drawImage(nave, pX, pY, 50, 50);
 		}
 
 		function desenharQuadrado(pX,pY) {
@@ -173,14 +193,7 @@ Roberto Claudio Castro Dos Santos RM96162
 				ctx.fillText("GAME OVER",canvas.width/2-150,canvas.height/2);
 		}
 
-		// Ativa pergunta
-		function newQuestion() {
-				ctx.clearRect(0, 0, 800, 400); // limpa o canvas antes da pergunta
-				
-				ctx.font = "16px Helvetica";
-				ctx.fillStyle = "black";
-				ctx.fillText("Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",canvas.width/2-150,canvas.height/2);
-		}
+
 
 		// Detecta se há colisão e dá game over caso sim
 		function detectarColisao() {
@@ -190,7 +203,11 @@ Roberto Claudio Castro Dos Santos RM96162
 				 ( (x_esquerda + 50) >  x && x_esquerda < (x + 50) ) && ( (y_esquerda + 50) > y && y_esquerda < (y + 50))
 				 ) {
 						// gameOver()
-						newQuestion();
+						// newQuestion(500, ctx.canvas.height/2);
+						question = true;
+						requestAnimationFrame(gameloop);
+						x = 500;
+						y = ctx.canvas.height/2;
          }
 				else {
 					//chama novamente o ciclo da animação
