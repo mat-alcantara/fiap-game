@@ -16,7 +16,7 @@ Roberto Claudio Castro Dos Santos RM96162
 	<title>Jogo Fiap</title>
 	</head>
 <body>
-	<canvas id="minha-tela" width="800" height="400" style="border: #F00 solid 1px;"> </canvas>
+	<canvas id="minha-tela" width="1280" height="720" style="border: #F00 solid 1px;"> </canvas>
 
 	<!-- Button -->
 	<div class='btn'>
@@ -77,12 +77,12 @@ Roberto Claudio Castro Dos Santos RM96162
 		var y_cima = 0;
 
 		// Inimigo da direita
-		var x_direita = 750;
+		var x_direita = 1230; 
 		var y_direita = Math.floor((Math.random() * canvas.height));
 
 		// Inimigo inferior
 		var x_baixo = Math.floor((Math.random() * canvas.width));
-		var y_baixo = 350;
+		var y_baixo = 670; 
 
 		// Inimigo da esquerda
 		var x_esquerda = 0;
@@ -93,7 +93,7 @@ Roberto Claudio Castro Dos Santos RM96162
 		var intervalo, tAtual;
 
 		// Tempo para geração de novos inimigos
-		var fps = 1/3;
+		var fps = 1/5;
 
 		// Indica se há uma pergunta aguardando resposta
 		var question = false;
@@ -140,7 +140,7 @@ Roberto Claudio Castro Dos Santos RM96162
 
 
 		function renderizarJogo(pX, pY, x) {
-			ctx.clearRect(0, 0, 800, 400); //antes de fazer o desenho é preciso limpar o canvas
+			ctx.clearRect(0, 0, 1280, 720); //antes de fazer o desenho é preciso limpar o canvas
 
 			desenharQuadrado(pX,pY);
 			pontos(x);
@@ -154,7 +154,7 @@ Roberto Claudio Castro Dos Santos RM96162
 
 		// Ativa pergunta
 		function newQuestion(pX, pY, x) {
-				ctx.clearRect(0, 0, 800, 400); // limpa o canvas antes da pergunta
+				ctx.clearRect(0, 0, 1280, 720);
 
 				ctx.font = "16px Helvetica";
 				ctx.fillStyle = "black";
