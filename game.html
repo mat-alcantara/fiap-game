@@ -7,7 +7,7 @@ Mateus Alcantara de Castro RM96137
 
 Roberto Claudio Castro Dos Santos RM96162 
 
-Samanta Melissa do Nascimento RM96224 -->
+ -->
 
 <!DOCTYPE html>
 <html>
@@ -65,7 +65,6 @@ Samanta Melissa do Nascimento RM96224 -->
 		// Le imagens da nave e do asteroide
 		var nave = document.getElementById('nave');
 		var asteroide = document.getElementById('asteroide');
-
 		var canvas = document.getElementById('minha-tela'); 
 		var ctx = canvas.getContext('2d');
 		
@@ -123,6 +122,7 @@ Samanta Melissa do Nascimento RM96224 -->
 
 		//a função gameloop é chamada aqui
 		requestAnimationFrame(gameloop);
+
 		function gameloop() {
 			// Pontuação
 			tAtual = new Date().getTime();
@@ -173,6 +173,15 @@ Samanta Melissa do Nascimento RM96224 -->
 				ctx.fillText("GAME OVER",canvas.width/2-150,canvas.height/2);
 		}
 
+		// Ativa pergunta
+		function newQuestion() {
+				ctx.clearRect(0, 0, 800, 400); // limpa o canvas antes da pergunta
+				
+				ctx.font = "16px Helvetica";
+				ctx.fillStyle = "black";
+				ctx.fillText("Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",canvas.width/2-150,canvas.height/2);
+		}
+
 		// Detecta se há colisão e dá game over caso sim
 		function detectarColisao() {
          if( ( (x_cima + 50) >  x && x_cima < (x + 50) ) && ( (y_cima + 50) > y && y_cima < (y + 50)) ||
@@ -180,7 +189,8 @@ Samanta Melissa do Nascimento RM96224 -->
 				 ( (x_baixo + 50) >  x && x_baixo < (x + 50) ) && ( (y_baixo + 50) > y && y_baixo < (y + 50)) ||
 				 ( (x_esquerda + 50) >  x && x_esquerda < (x + 50) ) && ( (y_esquerda + 50) > y && y_esquerda < (y + 50))
 				 ) {
-						gameOver()
+						// gameOver()
+						newQuestion();
          }
 				else {
 					//chama novamente o ciclo da animação
