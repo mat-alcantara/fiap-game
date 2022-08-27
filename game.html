@@ -20,7 +20,7 @@ Roberto Claudio Castro Dos Santos RM96162
 
 	<!-- Button -->
 	<div class='btn'>
-		<button id="botao" onclick="window.location.reload()" style="cursor: pointer; height: 48px; display:none; background-color: green; color:aliceblue; width: 800px;
+		<button id="botao" onclick="window.location.reload()" style="cursor: pointer; height: 48px; display:none; background-color: green; color:aliceblue; width: 1280px;
 		margin: 2px;">
 			Reiniciar o jogo
 		</button>
@@ -29,28 +29,28 @@ Roberto Claudio Castro Dos Santos RM96162
 	<!-- Nave normal -->
 	<div style="display:none;">
 		<img id="nave"
-				 src="imagens/nave.svg"
-				 width="50" height="50">
+				 src="imagens/nave.png"
+				 width="500" height="500">
 	</div>
 
 	<!-- Nave 90 -->
 	<div style="display:none;">
 		<img id="nave90"
-				 src="imagens/nave90.svg"
+				 src="imagens/nave90.png"
 				 width="50" height="50">
 	</div>
 
 	<!-- Nave 180 -->
 	<div style="display:none;">
 		<img id="nave180"
-				 src="imagens/nave180.svg"
+				 src="imagens/nave180.png"
 				 width="50" height="50">
 	</div>
 
 	<!-- Nave 270 -->
 	<div style="display:none;">
 		<img id="nave270"
-				 src="imagens/nave270.svg"
+				 src="imagens/nave270.png"
 				 width="50" height="50">
 	</div>
 
@@ -61,19 +61,45 @@ Roberto Claudio Castro Dos Santos RM96162
 				 width="50" height="50">
 	</div>
 
+		<!-- Respostas -->
+		<div style="display:none;">
+			<img id="aanswer"
+					 src="imagens/AAnswer.png"
+					 width="50" height="50">
+		</div>
+
+			<!-- Asteroide -->
+	<div style="display:none;">
+		<img id="banswer"
+				 src="imagens/BAnswer.png"
+				 width="50" height="50">
+	</div>
+
 	<script>  
 		// Le imagens da nave e do asteroide
 		var nave = document.getElementById('nave');
 		var asteroide = document.getElementById('asteroide');
 		var canvas = document.getElementById('minha-tela'); 
+		var a_answer = document.getElementById('aanswer'); 
+		var b_answer = document.getElementById('banswer'); 
 		var ctx = canvas.getContext('2d');
 		
 		//definir o ínicio do desenho
 		var x = canvas.width / 2;
 		var y = canvas.height / 2;
 
+		// Resposta A
+		var x_a_answer = generateRandomX()
+		var y_a_answer = Math.floor((Math.random() * canvas.height));
+
+		// repsosta B
+		var x_b_answer = generateRandomX()
+		var y_b_answer = Math.floor((Math.random() * canvas.height));
+
+		var correctAnswer = b_answer;
+
 		// Inimigo superior
-		var x_cima = Math.floor((Math.random() * canvas.width));
+		var x_cima = generateRandomX();
 		var y_cima = 0;
 
 		// Inimigo da direita
@@ -81,11 +107,11 @@ Roberto Claudio Castro Dos Santos RM96162
 		var y_direita = Math.floor((Math.random() * canvas.height));
 
 		// Inimigo inferior
-		var x_baixo = Math.floor((Math.random() * canvas.width));
+		var x_baixo = generateRandomX();
 		var y_baixo = 670; 
 
 		// Inimigo da esquerda
-		var x_esquerda = 0;
+		var x_esquerda = 480;
 		var y_esquerda = Math.floor((Math.random() * canvas.height));
 
 		// Obtendo o valor do momento em que o jogo é iniciado
@@ -93,22 +119,19 @@ Roberto Claudio Castro Dos Santos RM96162
 		var intervalo, tAtual;
 
 		// Tempo para geração de novos inimigos
-		var fps = 1/5;
-
-		// Indica se há uma pergunta aguardando resposta
-		var question = false;
+		var fps = 1/3;
 
 		// Movimentação da nave ao pressionar teclas
 		window.onkeydown = pressionaTecla;
 
     function pressionaTecla(tecla){
 				if(tecla.keyCode == 39  ) {
-					if (x <= 750) x = x + 10; //aumentar o x tem o efeito de ir para a direita
+					if (x <= 1230) x = x + 10; //aumentar o x tem o efeito de ir para a direita
 					nave = document.getElementById('nave270');
 				}
 
 				if(tecla.keyCode == 37  ) {
-					if (x >= 0) x = x - 10; //diminuir o x tem o efeito de ir para a esquerda
+					if (x >= 480) x = x - 10; //diminuir o x tem o efeito de ir para a esquerda
 					nave = document.getElementById('nave90')
 				}	
 			
@@ -118,7 +141,7 @@ Roberto Claudio Castro Dos Santos RM96162
 				}
 
 				if(tecla.keyCode == 40  ) {
-					if (y <= 350) y = y + 10; //aumentar y tem o efeito de descer
+					if (y <= 670) y = y + 10; //aumentar y tem o efeito de descer
 					nave = document.getElementById('nave180');
 				}
     }
@@ -131,41 +154,47 @@ Roberto Claudio Castro Dos Santos RM96162
 			tAtual = new Date().getTime();
       intervalo = Math.floor((tAtual - tInicial)/1000); // Compara o tempo atual com o inicial para definir a pontuação
 		
-			console.log(question);
-			question ? newQuestion(x, y) : renderizarJogo(x,y, intervalo);
+			renderizarJogo(x,y, intervalo);
 
 			// Chama a função que verifica a colisão, e caso exista, finaliza o jogo
 			detectarColisao();
 		}
 
-
 		function renderizarJogo(pX, pY, x) {
 			ctx.clearRect(0, 0, 1280, 720); //antes de fazer o desenho é preciso limpar o canvas
 
+			desenharDivisao();
+			newQuestion(x, y);
 			desenharQuadrado(pX,pY);
 			pontos(x);
+			criaRespostas();
 
-			y_cima += 2;
-			y_baixo -= 2;
+			y_cima += 4;
+			y_baixo -= 4;
 
 			x_esquerda += 4;
 			x_direita -= 4;
 		}
 
+		// Gera posição x
+		function generateRandomX() {
+			var x = Math.floor((Math.random() * (canvas.width)))
+
+			if (x <= 480) {
+				x = 480
+			}
+
+			return x;
+		}
+		
 		// Ativa pergunta
 		function newQuestion(pX, pY, x) {
-				ctx.clearRect(0, 0, 1280, 720);
-
 				ctx.font = "16px Helvetica";
 				ctx.fillStyle = "black";
-				ctx.fillText("Lorem Ipsum is simply Lorem Ipsum is simply", 100 ,50);
-				ctx.fillText("A) Lorem Ipsum is simply", 100 ,100);
-				ctx.fillText("B) Lorem Ipsum is simply", 100 ,150);
-				ctx.fillText("C) Lorem Ipsum is simply", 100 ,200);
-				ctx.fillText("D) Lorem Ipsum is simply", 100 ,250);
-
-				// posiciona a nave no canto direito
-				ctx.drawImage(nave, pX, pY, 50, 50);
+				ctx.fillText("Quanto é 2 + 2?", 20 ,50);
+				ctx.fillText("A) 4", 20 ,100);
+				ctx.fillText("B) 5", 20 ,150);
+		
 		}
 
 		function desenharQuadrado(pX,pY) {
@@ -179,10 +208,21 @@ Roberto Claudio Castro Dos Santos RM96162
 			ctx.drawImage(nave, pX, pY, 50, 50);
 		}
 
+		function desenharDivisao() {
+			 ctx.strokeStyle = 'black';
+				ctx.lineWidth = 2;
+
+			// draw a red line
+			ctx.beginPath();
+			ctx.moveTo(479, ctx.canvas.height);
+			ctx.lineTo(479, 0);
+			ctx.stroke();
+		}
+
 		// Exibe a pontuação na tela
 		function pontos(x) {
 				// Exibe a pontuação atual no canvas
-	    	ctx.strokeText('PONTOS: '+ x,canvas.width-150,canvas.height-10);
+	    	ctx.strokeText('PONTOS: '+ x,50,canvas.height-10);
 		}		
 
 		// Da o Game Over
@@ -193,21 +233,21 @@ Roberto Claudio Castro Dos Santos RM96162
 				ctx.fillText("GAME OVER",canvas.width/2-150,canvas.height/2);
 		}
 
-
-
 		// Detecta se há colisão e dá game over caso sim
 		function detectarColisao() {
-         if( ( (x_cima + 50) >  x && x_cima < (x + 50) ) && ( (y_cima + 50) > y && y_cima < (y + 50)) ||
-				 ( (x_direita + 50) >  x && x_direita < (x + 50) ) && ( (y_direita + 50) > y && y_direita < (y + 50)) ||
-				 ( (x_baixo + 50) >  x && x_baixo < (x + 50) ) && ( (y_baixo + 50) > y && y_baixo < (y + 50)) ||
-				 ( (x_esquerda + 50) >  x && x_esquerda < (x + 50) ) && ( (y_esquerda + 50) > y && y_esquerda < (y + 50))
-				 ) {
-						// gameOver()
-						// newQuestion(500, ctx.canvas.height/2);
-						question = true;
-						requestAnimationFrame(gameloop);
-						x = 500;
-						y = ctx.canvas.height/2;
+			// Colisão com a resposta A
+			if (algoritmoDeColisao(x_a_answer, y_a_answer)) {
+				checkAnswer(a_answer);
+			}
+
+			// Colisão com a resposta B
+			if (algoritmoDeColisao(x_b_answer, y_b_answer)) {
+				checkAnswer(b_answer);
+			}
+
+			// Colisão com asteroides
+			if(algoritmoDeColisao(x_cima, y_cima, x_direita, y_direita, x_baixo, y_baixo, x_esquerda, y_esquerda)) {
+						gameOver()
          }
 				else {
 					//chama novamente o ciclo da animação
@@ -215,22 +255,45 @@ Roberto Claudio Castro Dos Santos RM96162
 				}
      }
 
+		 // Obs: Complicado demais para tentar entender
+		 function algoritmoDeColisao(x_cima, y_cima, x_direita, y_direita, x_baixo, y_baixo, x_esquerda, y_esquerda) {
+			 return ( (x_cima + 50) >  x && x_cima < (x + 50) ) && ( (y_cima + 50) > y && y_cima < (y + 50)) ||
+				 ( (x_direita + 50) >  x && x_direita < (x + 50) ) && ( (y_direita + 50) > y && y_direita < (y + 50)) ||
+				 ( (x_baixo + 50) >  x && x_baixo < (x + 50) ) && ( (y_baixo + 50) > y && y_baixo < (y + 50)) ||
+				 ( (x_esquerda + 50) >  x && x_esquerda < (x + 50) ) && ( (y_esquerda + 50) > y && y_esquerda < (y + 50))
+		 }
+
+
+		 function checkAnswer(answer) {
+			 if (answer == correctAnswer) {
+					console.log('Resposta certa');
+			 } else {
+				 console.log('Resposta errada');
+			 }
+			 
+		 }
+
 		// Cria um inimigo em uma posição diferente a cada x segundos
 		 function criaInimigo() {
     		setTimeout(function() {
 					requestAnimationFrame(criaInimigo);
-					x_cima = Math.floor((Math.random() * canvas.width));
+					x_cima = generateRandomX();
 					y_cima = 0;
 
-					x_baixo = Math.floor((Math.random() * canvas.width));;
-					y_baixo = 350;
+					x_baixo = generateRandomX();;
+					y_baixo = 770;
 
-					x_direita = 750;
+					x_direita = 1230;
 					y_direita = Math.floor((Math.random() * canvas.height));
 
-					x_esquerda = 0;
+					x_esquerda = 480;
 					y_esquerda = Math.floor((Math.random() * canvas.height));
     		}, 1000 / fps);
+		}
+
+		function criaRespostas() {
+			ctx.drawImage(a_answer, x_a_answer, y_a_answer, 50, 50);
+			ctx.drawImage(b_answer, x_b_answer, y_b_answer, 50, 50);
 		}
 
 		criaInimigo();
