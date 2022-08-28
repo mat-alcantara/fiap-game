@@ -16,15 +16,34 @@ Roberto Claudio Castro Dos Santos RM96162
 	<title>Jogo Fiap</title>
 	</head>
 <body>
-	<canvas id="minha-tela" width="1280" height="720" style="border: #F00 solid 1px;"> </canvas>
-
-	<!-- Button -->
-	<div class='btn'>
-		<button id="botao" onclick="window.location.reload()" style="cursor: pointer; height: 48px; display:none; background-color: green; color:aliceblue; width: 1280px;
-		margin: 2px;">
-			Reiniciar o jogo
-		</button>
+		<div style="max-width: 1280px">
+			<h1>Olá jogador!</h1>
+			<p>Nessa jornada, você será Albert, um jovem com TDAH. Sua missão será se livrar de distrações enquanto responde a perguntas sobre os seus sintomas. Todas as perguntas serão situações onde o sujeito com TDAH terá de decidir qual atitude tomar, e dentre as duas alternativas, uma será uma boa estratégia para TDAH e a outra será uma estratégia ruim. Seu objetivo será acertar as 5 estratégias fundamentais sem ser pego pelas distrações. Boa sorte!</p>
+			<p>Controles: ← ↑ → ↓</p>
+		</div>
+	
+		<div id="game">
+			<canvas id="minha-tela" width="1280" height="720" style="border: #F00 solid 1px;"> </canvas>
+		</div>
+	
+		<!-- Button -->
+		<div class='btn'>
+			<button id="botao_iniciar" onclick="updateStarted()" style="cursor: pointer; height: 48px; display:none; background-color: green; color:aliceblue; width: 1280px;
+			margin: 2px;">
+				Iniciar o jogo
+			</button>
+		</div>
+		
+	
+		<!-- Button -->
+		<div class='btn'>
+			<button id="botao" onclick="window.location.reload()" style="cursor: pointer; height: 48px; display:none; background-color: green; color:aliceblue; width: 1280px;
+			margin: 2px;">
+				Reiniciar o jogo
+			</button>
+		</div>
 	</div>
+	
 	
 	<!-- Nave normal -->
 	<div style="display:none;">
@@ -57,7 +76,7 @@ Roberto Claudio Castro Dos Santos RM96162
 	<!-- Asteroide -->
 	<div style="display:none;">
 		<img id="asteroide"
-				 src="imagens/asteroide.svg"
+				 src="imagens/asteroide.png"
 				 width="50" height="50">
 	</div>
 
@@ -123,6 +142,41 @@ Roberto Claudio Castro Dos Santos RM96162
 
 		var pontuacao = 0;
 
+		var started = false;
+
+		var perguntas = [
+			{
+				q: 'Quanto é 1+1? Quanto é 1+1? Quanto é 1+1? Quanto é 1+1?',
+				a: '2',
+				b: '4',
+				correct: a_answer,
+			},
+			{
+				q: 'Quanto é 2+2?',
+				a: '2',
+				b: '4',
+				correct: b_answer,
+			},
+			{
+				q: 'Quanto é 3+3?',
+				a: '6',
+				b: '4',
+				correct: a_answer,
+			},
+			{
+				q: 'Quanto é 4+4?',
+				a: '5',
+				b: '8',
+				correct: b_answer,
+			},
+			{
+				q: 'Quanto é 5+5?',
+				a: '2',
+				b: '10',
+				correct: b_answer,
+			},
+		]
+
 		// Movimentação da nave ao pressionar teclas
 		window.onkeydown = pressionaTecla;
 
@@ -147,26 +201,40 @@ Roberto Claudio Castro Dos Santos RM96162
 					nave = document.getElementById('nave180');
 				}
     }
+		
+		function updateStarted() {
+			started = true;
+			document.getElementById('botao_iniciar').remove();
+			requestAnimationFrame(gameloop);
+		}
 
 		//a função gameloop é chamada aqui
 		requestAnimationFrame(gameloop);
 
 		function gameloop() {
-			// Pontuação
-			tAtual = new Date().getTime();
-      intervalo = Math.floor((tAtual - tInicial)/1000); // Compara o tempo atual com o inicial para definir a pontuação
-		
-			renderizarJogo(x,y, intervalo);
+			if(started) {
+				// Pontuação
+				tAtual = new Date().getTime();
+				intervalo = Math.floor((tAtual - tInicial)/1000); // Compara o tempo atual com o inicial para definir a pontuação
+						
+				renderizarJogo(x,y, intervalo);
 
-			// Chama a função que verifica a colisão, e caso exista, finaliza o jogo
-			detectarColisao();
+				// Chama a função que verifica a colisão, e caso exista, finaliza o jogo
+				detectarColisao();
+			} else {
+				ctx.font = "64px Helvetica";
+				ctx.fillStyle = "blue";
+				document.getElementById("botao_iniciar").style.display = "block";
+				ctx.fillText("Aguardando início",ctx.canvas.width/2 - 300,ctx.canvas.height/2);
+			}
+			
 		}
 
 		function renderizarJogo(pX, pY, x) {
 			ctx.clearRect(0, 0, 1280, 720); //antes de fazer o desenho é preciso limpar o canvas
 
 			desenharDivisao();
-			newQuestion();
+			criaPergunta();
 			desenharQuadrado(pX,pY);
 			pontos(pontuacao);
 			criaRespostas();
@@ -187,16 +255,6 @@ Roberto Claudio Castro Dos Santos RM96162
 			}
 
 			return x;
-		}
-		
-		// Ativa pergunta
-		function newQuestion() {
-				ctx.font = "16px Helvetica";
-				ctx.fillStyle = "black";
-				ctx.fillText("Quanto é 2 + 2?", 20 ,50);
-				ctx.fillText("A) 4", 20 ,100);
-				ctx.fillText("B) 5", 20 ,150);
-		
 		}
 
 		function desenharQuadrado(pX,pY) {
@@ -224,7 +282,7 @@ Roberto Claudio Castro Dos Santos RM96162
 		// Exibe a pontuação na tela
 		function pontos(x) {
 				// Exibe a pontuação atual no canvas
-	    	ctx.strokeText('PONTOS: '+ x,50,canvas.height-10);
+	    	ctx.strokeText('PONTOS: '+ x + ' / 5',20,canvas.height-10 );
 		}		
 
 		// Da o Game Over
@@ -278,7 +336,7 @@ Roberto Claudio Castro Dos Santos RM96162
 					criaRespostas();
 
 			 } else {
-				 console.log('Resposta errada');
+				 gameOver();
 			 }
 			 
 		 }
@@ -302,8 +360,22 @@ Roberto Claudio Castro Dos Santos RM96162
 		}
 
 		function criaRespostas() {
-			ctx.drawImage(a_answer, x_a_answer, y_a_answer, 50, 50);
-			ctx.drawImage(b_answer, x_b_answer, y_b_answer, 50, 50);
+			criaPergunta();
+
+			ctx.drawImage(a_answer, x_a_answer  > 1230 ? 1230 : x_a_answer, y_a_answer, 50, 50);
+			ctx.drawImage(b_answer, x_b_answer > 1230 ? 1230 : x_b_answer, y_b_answer, 50, 50);
+		}
+
+		function criaPergunta() {
+			console.log('chegou');
+			var perguntaAtual = perguntas[pontuacao];
+
+			ctx.font = "16px Helvetica";
+				ctx.fillStyle = "black";
+				ctx.fillText(perguntaAtual.q, 20 ,50);
+				ctx.fillText("A) " + perguntaAtual.a, 20 ,100);
+				ctx.fillText("B) " + perguntaAtual.b, 20 ,150);
+				correctAnswer = perguntaAtual.correct;
 		}
 
 		criaInimigo();
