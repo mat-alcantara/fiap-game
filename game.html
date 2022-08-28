@@ -18,7 +18,7 @@ Roberto Claudio Castro Dos Santos RM96162
 <body>
 		<div style="max-width: 1280px">
 			<h1>Olá jogador!</h1>
-			<p>Nessa jornada, você será Albert, um jovem com TDAH. Sua missão será se livrar de distrações enquanto responde a perguntas sobre os seus sintomas. Todas as perguntas serão situações onde o sujeito com TDAH terá de decidir qual atitude tomar, e dentre as duas alternativas, uma será uma boa estratégia para TDAH e a outra será uma estratégia ruim. Seu objetivo será acertar as 5 estratégias fundamentais sem ser pego pelas distrações. Boa sorte!</p>
+			<p>Nessa jornada, você será Albert, um jovem com TDAH. Sua missão será se livrar de distrações enquanto responde a perguntas sobre os seus sintomas. Todas as perguntas serão situações onde o sujeito com TDAH terá de decidir qual atitude tomar, e dentre as duas alternativas, uma será uma boa estratégia para TDAH e a outra será uma estratégia ruim. Seu objetivo será acertar as 5 estratégias fundamentais sem ser pego pelas distrações. Boa sorte! Lembre-se: A dificuldade aumentará com o tempo.</p>
 			<p>Controles: ← ↑ → ↓</p>
 		</div>
 	
@@ -73,21 +73,18 @@ Roberto Claudio Castro Dos Santos RM96162
 				 width="50" height="50">
 	</div>
 
-	<!-- Asteroide -->
 	<div style="display:none;">
 		<img id="asteroide"
-				 src="imagens/asteroide.png"
+				 src="imagens/enemies.gif"
 				 width="50" height="50">
 	</div>
 
-		<!-- Respostas -->
 		<div style="display:none;">
 			<img id="aanswer"
 					 src="imagens/AAnswer.png"
 					 width="50" height="50">
 		</div>
 
-			<!-- Asteroide -->
 	<div style="display:none;">
 		<img id="banswer"
 				 src="imagens/BAnswer.png"
@@ -104,7 +101,7 @@ Roberto Claudio Castro Dos Santos RM96162
 		var ctx = canvas.getContext('2d');
 		
 		//definir o ínicio do desenho
-		var x = canvas.width / 2;
+		var x = canvas.width / 2 + 220;
 		var y = canvas.height / 2;
 
 		// Resposta A
@@ -142,37 +139,39 @@ Roberto Claudio Castro Dos Santos RM96162
 
 		var pontuacao = 0;
 
+
+
 		var started = false;
 
 		var perguntas = [
 			{
-				q: 'Quanto é 1+1? Quanto é 1+1? Quanto é 1+1? Quanto é 1+1?',
-				a: '2',
-				b: '4',
+				q: 'Amanhã você terá um dia com muitos compromissos.\nSabendo disso você:',
+				a: 'Programa tudo em sua agenda.',
+				b: 'Liga o videogame um pouquinho pra relaxar antes de dormir.',
 				correct: a_answer,
 			},
 			{
-				q: 'Quanto é 2+2?',
-				a: '2',
-				b: '4',
+				q: 'Você tem um trabalho para entregar semana que vem. Você:',
+				a: 'Deixa para última hora',
+				b: 'Começa a fazer o quanto antes.',
 				correct: b_answer,
 			},
 			{
-				q: 'Quanto é 3+3?',
-				a: '6',
-				b: '4',
+				q: 'Você tem certeza que vai levar 30 minutos para se preparar \npara sair para um compromisso.',
+				a: 'Mesmo assim você reserva mais 15 minutos por precaução.',
+				b: 'Se eu tenho certeza me organizo neste tempo',
 				correct: a_answer,
 			},
 			{
-				q: 'Quanto é 4+4?',
-				a: '5',
-				b: '8',
+				q: 'Um grande projeto vem pela frente. Preciso:',
+				a: 'Fazer de uma vez.',
+				b: 'Dividí-lo em pequenas tarefas.',
 				correct: b_answer,
 			},
 			{
-				q: 'Quanto é 5+5?',
-				a: '2',
-				b: '10',
+				q: 'Estou travado diante de uma tarefa difícil.',
+				a: 'Vou continuar até terminar.',
+				b: 'Talvez uma pausa me ajude a recuperar a concentração.',
 				correct: b_answer,
 			},
 		]
@@ -182,28 +181,29 @@ Roberto Claudio Castro Dos Santos RM96162
 
     function pressionaTecla(tecla){
 				if(tecla.keyCode == 39  ) {
-					if (x <= 1230) x = x + 10; //aumentar o x tem o efeito de ir para a direita
+					if (x <= 1230) x = x + (20 - (pontuacao * 3)); //aumentar o x tem o efeito de ir para a direita
 					nave = document.getElementById('nave270');
 				}
 
 				if(tecla.keyCode == 37  ) {
-					if (x >= 480) x = x - 10; //diminuir o x tem o efeito de ir para a esquerda
+					if (x >= 480) x = x - (20 - (pontuacao * 3)) //diminuir o x tem o efeito de ir para a esquerda
 					nave = document.getElementById('nave90')
 				}	
 			
 				if(tecla.keyCode == 38  ) {
-					if (y >= 0) y = y - 10; //diminuir y tem o efeito de subida
+					if (y >= 0) y = y - (20 - (pontuacao * 3)) //diminuir y tem o efeito de subida
 					nave = document.getElementById('nave');
 				}
 
 				if(tecla.keyCode == 40  ) {
-					if (y <= 670) y = y + 10; //aumentar y tem o efeito de descer
+					if (y <= 670) y = y + (20 - (pontuacao * 3)) //aumentar y tem o efeito de descer
 					nave = document.getElementById('nave180');
 				}
     }
 		
 		function updateStarted() {
 			started = true;
+			criaInimigo();
 			document.getElementById('botao_iniciar').remove();
 			requestAnimationFrame(gameloop);
 		}
@@ -257,6 +257,15 @@ Roberto Claudio Castro Dos Santos RM96162
 			return x;
 		}
 
+		function vitoria() {
+			ctx.clearRect(0, 0, 1280, 720); //antes de fazer o desenho é preciso limpar o canvas
+
+				ctx.font = "64px Helvetica";
+				ctx.fillStyle = "green";
+				document.getElementById("botao").style.display = "block";
+				ctx.fillText("Você venceu!",canvas.width/2-150,canvas.height/2);
+		}
+
 		function desenharQuadrado(pX,pY) {
 			//desenha o asteroide
 			ctx.drawImage(asteroide, x_cima, y_cima, 50, 50);
@@ -287,6 +296,8 @@ Roberto Claudio Castro Dos Santos RM96162
 
 		// Da o Game Over
 		function gameOver() {
+				ctx.clearRect(0, 0, 1280, 720); //antes de fazer o desenho é preciso limpar o canvas
+
 				ctx.font = "64px Helvetica";
 				ctx.fillStyle = "red";
 				document.getElementById("botao").style.display = "block";
@@ -295,6 +306,10 @@ Roberto Claudio Castro Dos Santos RM96162
 
 		// Detecta se há colisão e dá game over caso sim
 		function detectarColisao() {
+			if (pontuacao == 1) {
+				vitoria();
+			}
+
 			// Colisão com a resposta A
 			if (algoritmoDeColisao(x_a_answer, y_a_answer)) {
 				checkAnswer(a_answer);
@@ -336,6 +351,7 @@ Roberto Claudio Castro Dos Santos RM96162
 					criaRespostas();
 
 			 } else {
+				 pontuacao = 0;
 				 gameOver();
 			 }
 			 
@@ -362,23 +378,30 @@ Roberto Claudio Castro Dos Santos RM96162
 		function criaRespostas() {
 			criaPergunta();
 
-			ctx.drawImage(a_answer, x_a_answer  > 1230 ? 1230 : x_a_answer, y_a_answer, 50, 50);
-			ctx.drawImage(b_answer, x_b_answer > 1230 ? 1230 : x_b_answer, y_b_answer, 50, 50);
+			ctx.drawImage(a_answer, x_a_answer  > 1230 ? 1230 : x_a_answer, y_a_answer > 670 ? 670 : y_a_answer, 50, 50);
+			ctx.drawImage(b_answer, x_b_answer > 1230 ? 1230 : x_b_answer, y_b_answer > 670 ? 670 : y_b_answer, 50, 50);
 		}
 
 		function criaPergunta() {
-			console.log('chegou');
-			var perguntaAtual = perguntas[pontuacao];
+				var perguntaAtual = perguntas[pontuacao];
 
-			ctx.font = "16px Helvetica";
+				var pergunta = perguntaAtual.q.split('\n');
+				var lineheight = 25;
+
+				ctx.font = "16px Helvetica";
 				ctx.fillStyle = "black";
-				ctx.fillText(perguntaAtual.q, 20 ,50);
-				ctx.fillText("A) " + perguntaAtual.a, 20 ,100);
-				ctx.fillText("B) " + perguntaAtual.b, 20 ,150);
+				
+				for (var j = 0; j<pergunta.length; j++) {
+					ctx.fillText(pergunta[j], 20 ,50 + (j*lineheight) );
+				}
+
+				// ctx.fillText(perguntaAtual.q, 20 ,50);
+				ctx.fillText("A) " + perguntaAtual.a, 20 ,100 + (j*lineheight));
+				ctx.fillText("B) " + perguntaAtual.b, 20 ,150 + (j*lineheight));
 				correctAnswer = perguntaAtual.correct;
 		}
 
-		criaInimigo();
+		
 
 
 	</script>  
