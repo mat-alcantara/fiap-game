@@ -23,7 +23,7 @@ Roberto Claudio Castro Dos Santos RM96162
 		</div>
 	
 		<div id="game">
-			<canvas id="minha-tela" width="1280" height="720" style="border: #F00 solid 1px;"> </canvas>
+			<canvas id="minha-tela" width="1280" height="650" style="border: #F00 solid 1px;"> </canvas>
 		</div>
 	
 		<!-- Button -->
@@ -104,6 +104,7 @@ Roberto Claudio Castro Dos Santos RM96162
 		var x = canvas.width / 2 + 220;
 		var y = canvas.height / 2;
 
+		
 		// Resposta A
 		var x_a_answer = generateRandomX()
 		var y_a_answer = Math.floor((Math.random() * canvas.height));
@@ -124,7 +125,7 @@ Roberto Claudio Castro Dos Santos RM96162
 
 		// Inimigo inferior
 		var x_baixo = generateRandomX();
-		var y_baixo = 670; 
+		var y_baixo = 600; 
 
 		// Inimigo da esquerda
 		var x_esquerda = 480;
@@ -181,22 +182,22 @@ Roberto Claudio Castro Dos Santos RM96162
 
     function pressionaTecla(tecla){
 				if(tecla.keyCode == 39  ) {
-					if (x <= 1230) x = x + (20 - (pontuacao * 3)); //aumentar o x tem o efeito de ir para a direita
+					if (x <= 1230) x = x + (50 - (pontuacao * 10)); //aumentar o x tem o efeito de ir para a direita
 					nave = document.getElementById('nave270');
 				}
 
 				if(tecla.keyCode == 37  ) {
-					if (x >= 480) x = x - (20 - (pontuacao * 3)) //diminuir o x tem o efeito de ir para a esquerda
+					if (x >= 480) x = x - (50 - (pontuacao * 10)) //diminuir o x tem o efeito de ir para a esquerda
 					nave = document.getElementById('nave90')
 				}	
 			
 				if(tecla.keyCode == 38  ) {
-					if (y >= 0) y = y - (20 - (pontuacao * 3)) //diminuir y tem o efeito de subida
+					if (y >= 0) y = y - (50 - (pontuacao * 10)) //diminuir y tem o efeito de subida
 					nave = document.getElementById('nave');
 				}
 
 				if(tecla.keyCode == 40  ) {
-					if (y <= 670) y = y + (20 - (pontuacao * 3)) //aumentar y tem o efeito de descer
+					if (y <= 600) y = y + (50 - (pontuacao * 10)) //aumentar y tem o efeito de descer
 					nave = document.getElementById('nave180');
 				}
     }
@@ -231,13 +232,14 @@ Roberto Claudio Castro Dos Santos RM96162
 		}
 
 		function renderizarJogo(pX, pY, x) {
-			ctx.clearRect(0, 0, 1280, 720); //antes de fazer o desenho é preciso limpar o canvas
-
-			desenharDivisao();
-			criaPergunta();
-			desenharQuadrado(pX,pY);
-			pontos(pontuacao);
-			criaRespostas();
+			if (pontuacao <= 4) {
+				ctx.clearRect(0, 0, 1280, 650); //antes de fazer o desenho é preciso limpar o canvas
+				desenharDivisao();
+				criaPergunta();
+				desenharQuadrado(pX,pY);
+				pontos(pontuacao);
+				criaRespostas();
+			}
 
 			y_cima += 4;
 			y_baixo -= 4;
@@ -258,7 +260,7 @@ Roberto Claudio Castro Dos Santos RM96162
 		}
 
 		function vitoria() {
-			ctx.clearRect(0, 0, 1280, 720); //antes de fazer o desenho é preciso limpar o canvas
+				ctx.clearRect(0, 0, 1280, 650); //antes de fazer o desenho é preciso limpar o canvas
 
 				ctx.font = "64px Helvetica";
 				ctx.fillStyle = "green";
@@ -296,7 +298,7 @@ Roberto Claudio Castro Dos Santos RM96162
 
 		// Da o Game Over
 		function gameOver() {
-				ctx.clearRect(0, 0, 1280, 720); //antes de fazer o desenho é preciso limpar o canvas
+				ctx.clearRect(0, 0, 1280, 650); //antes de fazer o desenho é preciso limpar o canvas
 
 				ctx.font = "64px Helvetica";
 				ctx.fillStyle = "red";
@@ -306,10 +308,6 @@ Roberto Claudio Castro Dos Santos RM96162
 
 		// Detecta se há colisão e dá game over caso sim
 		function detectarColisao() {
-			if (pontuacao == 5) {
-				vitoria();
-			}
-
 			// Colisão com a resposta A
 			if (algoritmoDeColisao(x_a_answer, y_a_answer)) {
 				checkAnswer(a_answer);
@@ -342,16 +340,16 @@ Roberto Claudio Castro Dos Santos RM96162
 		 function checkAnswer(answer) {
 			 if (answer == correctAnswer) {
 					pontuacao += 1;
-					
 					x_a_answer = generateRandomX()
 					y_a_answer = Math.floor((Math.random() * canvas.height));
 					x_b_answer = generateRandomX()
 					y_b_answer = Math.floor((Math.random() * canvas.height));
 
 					criaRespostas();
-
+					
 			 } else {
-				 pontuacao = 0;
+				pontuacao = 0;
+				started = false;
 				 gameOver();
 			 }
 			 
@@ -376,10 +374,14 @@ Roberto Claudio Castro Dos Santos RM96162
 		}
 
 		function criaRespostas() {
-			criaPergunta();
+			if (pontuacao <= 4) {
+				criaPergunta();
 
-			ctx.drawImage(a_answer, x_a_answer  > 1230 ? 1230 : x_a_answer, y_a_answer > 670 ? 670 : y_a_answer, 50, 50);
-			ctx.drawImage(b_answer, x_b_answer > 1230 ? 1230 : x_b_answer, y_b_answer > 670 ? 670 : y_b_answer, 50, 50);
+				ctx.drawImage(a_answer, x_a_answer  > 1230 ? 1230 : x_a_answer, y_a_answer > 600 ? 600 : y_a_answer, 50, 50);
+				ctx.drawImage(b_answer, x_b_answer > 1230 ? 1230 : x_b_answer, y_b_answer > 600 ? 600 : y_b_answer, 50, 50);
+			} else {
+				vitoria();
+			}	
 		}
 
 		function criaPergunta() {
